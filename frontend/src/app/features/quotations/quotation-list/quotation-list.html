@@ -1,0 +1,103 @@
+<app-navbar />
+
+<div class="ml-[220px] min-h-screen" style="background: #1d1e22;">
+  <div class="mx-auto max-w-7xl px-8 py-8">
+
+    <div class="mb-6 flex items-center justify-between pb-6" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <div>
+        <h1 class="text-[22px] font-bold tracking-tight text-white">Quotations</h1>
+        @if (!loading) {
+          <p class="mt-0.5 text-sm" style="color: #929196;">{{ quotations.length }} total</p>
+        }
+      </div>
+      <a routerLink="/quotations/new"
+        class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:opacity-90"
+        style="background: #6366f1;">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Quotation
+      </a>
+    </div>
+
+    @if (loading) {
+      <div class="animate-pulse space-y-4">
+        <div class="flex gap-1 rounded-2xl p-1 w-fit" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          @for (t of [1,2,3,4,5,6]; track t) { <div class="h-8 w-16 rounded-lg" style="background: #29282f;"></div> }
+        </div>
+        <div class="overflow-hidden rounded-2xl" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          @for (row of [1,2,3,4,5,6,7]; track row) {
+            <div class="flex items-center gap-6 px-6 py-4" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+              <div class="h-3.5 w-20 rounded" style="background: #29282f;"></div>
+              <div class="h-3.5 flex-1 rounded" style="background: #29282f;"></div>
+              <div class="h-3.5 w-20 rounded" style="background: #29282f;"></div>
+              <div class="h-5 w-16 rounded-full" style="background: #29282f;"></div>
+              <div class="ml-auto h-3.5 w-14 rounded" style="background: #29282f;"></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (!loading) {
+      <div class="mb-4 flex flex-wrap gap-1 rounded-2xl p-1 w-fit" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+        @for (f of filters; track f) {
+          <button (click)="activeFilter = f"
+            class="rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-150"
+            [style]="activeFilter === f ? 'background: #6366f1; color: white;' : 'color: #929196;'"
+            [class]="activeFilter === f ? '' : 'hover:bg-white/5 hover:text-white'">
+            {{ f | titlecase }}
+            @if (count(f) > 0) { <span class="ml-1 text-xs opacity-60">({{ count(f) }})</span> }
+          </button>
+        }
+      </div>
+
+      @if (filtered.length === 0) {
+        <div class="rounded-2xl py-20 text-center" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          <p class="mb-1 text-sm font-semibold text-white">No quotations found</p>
+          <p class="mb-5 text-sm" style="color: #929196;">
+            {{ activeFilter === 'all' ? 'Create your first quotation.' : 'No quotations with status "' + activeFilter + '".' }}
+          </p>
+          @if (activeFilter === 'all') {
+            <a routerLink="/quotations/new"
+              class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white hover:opacity-90"
+              style="background: #6366f1;">Create quotation</a>
+          }
+        </div>
+      }
+
+      @if (filtered.length > 0) {
+        <div class="overflow-hidden rounded-2xl" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          <table class="min-w-full">
+            <thead>
+              <tr style="background: rgba(15,14,19,0.5);">
+                @for (h of ['Quotation #','Client','Issue Date','Valid Until','Status','Total']; track h) {
+                  <th class="px-6 py-3 text-[10px] font-semibold uppercase tracking-widest"
+                      [class]="h === 'Total' ? 'text-right' : 'text-left'"
+                      style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">{{ h }}</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              @for (q of filtered; track q.id) {
+                <tr class="cursor-pointer transition-colors hover:bg-white/[0.02]"
+                    [routerLink]="['/quotations', q.id]"
+                    style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                  <td class="px-6 py-4 text-sm font-semibold text-indigo-400">{{ q.quotation_number }}</td>
+                  <td class="px-6 py-4 text-[13.5px] text-white">{{ clientName(q) }}</td>
+                  <td class="px-6 py-4 text-sm" style="color: #929196;">{{ q.issue_date }}</td>
+                  <td class="px-6 py-4 text-sm" style="color: #929196;">{{ q.valid_until || '—' }}</td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium {{ statusClass(q.status) }}">{{ q.status }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-right text-sm font-semibold text-white">€{{ q.total }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+  </div>
+</div>

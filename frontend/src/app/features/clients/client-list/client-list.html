@@ -1,0 +1,138 @@
+<app-navbar />
+
+<div class="ml-[220px] min-h-screen" style="background: #1d1e22;">
+  <div class="mx-auto max-w-7xl px-8 py-8">
+
+    <!-- Header -->
+    <div class="mb-6 flex items-center justify-between pb-6" style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+      <div>
+        <h1 class="text-[22px] font-bold tracking-tight text-white">Clients</h1>
+        @if (!loading) {
+          <p class="mt-0.5 text-sm" style="color: #929196;">{{ filtered.length }} of {{ clients.length }}</p>
+        }
+      </div>
+      <a routerLink="/clients/new"
+        class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:opacity-90"
+        style="background: #6366f1;">
+        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Client
+      </a>
+    </div>
+
+    <!-- Skeleton -->
+    @if (loading) {
+      <div class="animate-pulse space-y-4">
+        <div class="h-10 w-72 rounded-2xl" style="background: #29282f;"></div>
+        <div class="overflow-hidden rounded-2xl" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          @for (row of [1,2,3,4,5,6]; track row) {
+            <div class="flex items-center gap-4 px-6 py-4" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+              <div class="h-8 w-8 shrink-0 rounded-full" style="background: #29282f;"></div>
+              <div class="h-3.5 flex-1 rounded" style="background: #29282f;"></div>
+              <div class="h-3.5 w-40 rounded" style="background: #29282f;"></div>
+              <div class="h-3.5 w-24 rounded" style="background: #29282f;"></div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    @if (!loading) {
+      <!-- Search -->
+      <div class="relative mb-4">
+        <svg class="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2" style="color: #929196;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0" />
+        </svg>
+        <input type="text" [(ngModel)]="search" placeholder="Search clients…"
+          class="w-full max-w-sm rounded-2xl py-2.5 pl-11 pr-4 text-sm text-white outline-none transition-all duration-200 placeholder:opacity-40
+                 focus:border-indigo-500/60 focus:ring-1 focus:ring-indigo-500/20"
+          style="background: #29282f; border: 1px solid rgba(255,255,255,0.05);" />
+      </div>
+
+      @if (clients.length === 0) {
+        <div class="rounded-2xl py-20 text-center" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          <p class="mb-1 text-sm font-semibold text-white">No clients yet</p>
+          <p class="mb-5 text-sm" style="color: #929196;">Add your first client to start creating invoices.</p>
+          <a routerLink="/clients/new"
+            class="inline-flex items-center gap-2 rounded-2xl px-4 py-2.5 text-sm font-semibold uppercase tracking-wide text-white transition-colors hover:opacity-90"
+            style="background: #6366f1;">Add your first client</a>
+        </div>
+      }
+
+      @if (clients.length > 0 && filtered.length === 0) {
+        <div class="rounded-2xl py-12 text-center" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          <p class="text-sm" style="color: #929196;">No clients match "<strong class="text-white">{{ search }}</strong>".</p>
+          <button (click)="search = ''" class="mt-2 text-sm text-indigo-400 hover:text-indigo-300 transition-colors">Clear search</button>
+        </div>
+      }
+
+      @if (filtered.length > 0) {
+        <div class="overflow-hidden rounded-2xl" style="background: #19181d; border: 1px solid rgba(255,255,255,0.06);">
+          <table class="min-w-full">
+            <thead>
+              <tr style="background: rgba(15,14,19,0.5);">
+                <th class="px-6 py-3 text-left text-[10px] font-semibold uppercase tracking-widest" style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">Name</th>
+                <th class="px-6 py-3 text-left text-[10px] font-semibold uppercase tracking-widest" style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">Email</th>
+                <th class="px-6 py-3 text-left text-[10px] font-semibold uppercase tracking-widest" style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">Phone</th>
+                <th class="px-6 py-3 text-left text-[10px] font-semibold uppercase tracking-widest" style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">Tax #</th>
+                <th class="px-6 py-3 text-right text-[10px] font-semibold uppercase tracking-widest" style="color: #929196; border-bottom: 1px solid rgba(255,255,255,0.05);">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (client of filtered; track client.id) {
+                <tr class="transition-colors hover:bg-white/[0.02]" style="border-bottom: 1px solid rgba(255,255,255,0.04);">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-xs font-bold text-indigo-400"
+                           style="background: rgba(99,102,241,0.12);">
+                        {{ initials(client.name) }}
+                      </div>
+                      <span class="text-[13.5px] font-medium text-white">{{ client.name }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-sm" style="color: #929196;">{{ client.contact_email || '—' }}</td>
+                  <td class="px-6 py-4 text-sm" style="color: #929196;">{{ client.phone || '—' }}</td>
+                  <td class="px-6 py-4 text-sm" style="color: #929196;">{{ client.tax_number || '—' }}</td>
+                  <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-4">
+                      <a [routerLink]="['/clients', client.id, 'edit']"
+                        class="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors">Edit</a>
+                      <button (click)="confirmDelete(client.id)"
+                        class="text-sm font-medium text-red-400 hover:text-red-300 transition-colors">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+
+  </div>
+</div>
+
+@if (deleteId !== null) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.7);">
+    <div class="card-in w-full max-w-sm rounded-2xl p-8" style="background: #19181d; border: 1px solid rgba(255,255,255,0.08);">
+      <div class="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl"
+           style="background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);">
+        <svg class="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <h3 class="mb-1 text-center text-base font-bold text-white">Delete client?</h3>
+      <p class="mb-7 text-center text-sm" style="color: #929196;">This action cannot be undone.</p>
+      <div class="flex gap-3">
+        <button (click)="cancelDelete()"
+          class="flex-1 rounded-2xl py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/5"
+          style="border: 1px solid rgba(255,255,255,0.1);">Cancel</button>
+        <button (click)="doDelete()" [disabled]="deleting"
+          class="flex-1 rounded-2xl py-2.5 text-sm font-semibold text-white transition-colors disabled:opacity-40"
+          style="background: #ef4444;">{{ deleting ? 'Deleting…' : 'Delete' }}</button>
+      </div>
+    </div>
+  </div>
+}

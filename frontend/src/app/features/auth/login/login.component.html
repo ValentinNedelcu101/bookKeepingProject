@@ -1,0 +1,125 @@
+<div class="flex min-h-screen items-center justify-center px-4 py-12" style="background: #1d1e22;">
+
+  <!-- Exact cinema pattern: max-w-md flex flex-col gap-8, card-in animation -->
+  <div class="flex w-full max-w-md flex-col gap-8 card-in">
+
+    <!-- Logo section: flex flex-col items-center gap-3 -->
+    <div class="flex flex-col items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-2xl"
+           style="background: rgba(99,102,241,0.10); border: 1px solid rgba(99,102,241,0.20);">
+        <svg width="22" height="22" viewBox="0 0 24 24"
+             fill="none" stroke="#818cf8" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="13" x2="15" y2="13"/>
+          <line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+      </div>
+      <div class="text-center">
+        <h1 class="text-2xl font-bold tracking-tight text-white">Bookkeeper</h1>
+        <p class="mt-1 text-sm" style="color: #929196;">Invoice & financial management</p>
+      </div>
+    </div>
+
+    <!-- Card: exact cinema pattern — bg-cinema-surface border border-white/5 rounded-2xl p-8 flex flex-col gap-6 -->
+    <div class="flex flex-col gap-6 rounded-2xl p-8"
+         style="background: #19181d; border: 1px solid rgba(255,255,255,0.05);">
+
+      <!-- Heading -->
+      <div class="flex flex-col gap-1">
+        <h2 class="text-xl font-bold text-white">Welcome back</h2>
+        <p class="text-sm" style="color: #929196;">Sign in to manage your invoices and clients</p>
+      </div>
+
+      <!-- Form: flex flex-col gap-4 -->
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="flex flex-col gap-4">
+
+        <!-- Email: flex flex-col gap-1.5 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-medium uppercase tracking-widest" style="color: #929196;">Email</label>
+          <input
+            type="email" [(ngModel)]="email" name="email" required
+            placeholder="you@example.com" autocomplete="email"
+            class="w-full rounded-xl px-4 py-3 text-sm text-white outline-none transition-all duration-200 placeholder:opacity-40
+                   focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
+            style="background: #29282f; border: 1px solid rgba(255,255,255,0.05);" />
+        </div>
+
+        <!-- Password: flex flex-col gap-1.5 -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-xs font-medium uppercase tracking-widest" style="color: #929196;">Password</label>
+          <div class="relative">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="password" name="password" required
+              placeholder="••••••••" autocomplete="current-password"
+              class="w-full rounded-xl px-4 py-3 pr-12 text-sm text-white outline-none transition-all duration-200 placeholder:opacity-40
+                     focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20"
+              style="background: #29282f; border: 1px solid rgba(255,255,255,0.05);" />
+            <button type="button" (click)="showPassword = !showPassword"
+              class="absolute right-4 top-1/2 -translate-y-1/2 transition-colors hover:text-white"
+              style="color: #929196;">
+              @if (showPassword) {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+                  <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+              } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <!-- Error -->
+        @if (error) {
+          <div class="flex items-center gap-3 rounded-xl px-4 py-3"
+               style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <p class="text-sm text-red-400">{{ error }}</p>
+          </div>
+        }
+
+        <!-- Submit — exact cinema button pattern -->
+        <button type="submit" [disabled]="loading"
+          class="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold uppercase tracking-wide text-white transition-all duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          style="background: #6366f1;">
+          @if (loading) {
+            <svg class="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+            </svg>
+            Signing in…
+          } @else {
+            Sign In
+          }
+        </button>
+
+      </form>
+
+      <!-- Divider — exact cinema pattern -->
+      <div class="flex items-center gap-3">
+        <div class="h-px flex-1" style="background: rgba(255,255,255,0.05);"></div>
+        <span class="text-xs" style="color: #929196;">or</span>
+        <div class="h-px flex-1" style="background: rgba(255,255,255,0.05);"></div>
+      </div>
+
+      <!-- Sign up link — exact cinema pattern -->
+      <p class="text-center text-sm" style="color: #929196;">
+        Don't have an account?
+        <a routerLink="/register"
+           class="ml-1 font-medium text-white transition-colors duration-200 hover:text-indigo-400">
+          Create one
+        </a>
+      </p>
+
+    </div>
+  </div>
+</div>
